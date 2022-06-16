@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\Token;
+use frontend\models\TgUser;
 use yii\web\Controller;
 
 class BotController extends Controller
