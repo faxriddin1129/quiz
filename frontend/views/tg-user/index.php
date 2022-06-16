@@ -1,5 +1,6 @@
 <?php
 
+use common\models\TgUser;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -34,8 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'tg_user_id',
             'tg_chat_id',
             'tg_phone',
-            //'money',
-            //'fullName',
+            'money',
+            'fullName',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, TgUser $model, $key, $index, $column) {

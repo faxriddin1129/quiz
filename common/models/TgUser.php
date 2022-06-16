@@ -24,7 +24,7 @@ class TgUser extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%tg_user}}';
+        return 'tg_user';
     }
 
     /**
@@ -34,7 +34,8 @@ class TgUser extends ActiveRecord
     {
         return [
             [['money',], 'integer'],
-            [['username', 'fullName', 'tg_user_id', 'tg_chat_id', 'tg_phone'], 'safe'],
+            [['tg_user_id', 'tg_chat_id','tg_phone'], 'integer'],
+            [['username', 'fullName'], 'string'],
         ];
     }
 

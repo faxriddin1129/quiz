@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\User;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -20,15 +19,13 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['login', 'error'],
                         'allow' => true,
-                        'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'index', 'signup'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -42,7 +39,6 @@ class SiteController extends Controller
             ],
         ];
     }
-
 
 
     public function actions()

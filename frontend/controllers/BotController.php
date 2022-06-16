@@ -2,8 +2,9 @@
 
 namespace frontend\controllers;
 
+use common\models\Contact;
+use common\models\TgUser;
 use common\models\Token;
-use frontend\models\TgUser;
 use yii\web\Controller;
 
 class BotController extends Controller
@@ -29,31 +30,38 @@ class BotController extends Controller
         $this->text = $message['text'];
         $this->full_Name = $from['first_name'].' '.$from['last_name'];
         $this->phone = $updates['message']['contact']['phone_number'];
+        $check = TgUser::findOne(['tg_chat_id'=>$this->chatId]);
 
-//        if ($this->phone){
-//            $modelNew = new TgUser();
-//            $modelNew->fullName = $this->full_Name;
-//            $modelNew->money = 10000;
-//            $modelNew->tg_user_id = $this->userId;
-//            $modelNew->tg_chat_id = $this->chatId;
-//            $modelNew->tg_phone = $this->phone;
-//            $modelNew->username = $this->username;
-//            if ($modelNew->validate()){
-//                $this->main();
-//            }
-//            $this->bot(Token::sendMessage,[
-//                'chat_id'=>$this->chatId,
-//                'text'=> $modelNew->tg_phone,
-//            ]);
-//        }
+        if ($this->phone) {
+            if (!$check){
+                $db = \Yii::$app->db;
+                $db->createCommand('INSERT INTO `tg_user` (`tg_phone`,`username`,`fullName`,`money`,`tg_user_id`,`tg_chat_id`) VALUES (:tg_phone, :username, :fullName, :money, :tg_user_id, :tg_chat_id)', [
+                    ':tg_phone' => $this->phone,
+                    ':username' => $this->username,
+                    ':fullName' => $this->full_Name,
+                    ':tg_user_id' => $this->userId,
+                    ':tg_chat_id' => $this->chatId,
+                    ':money' => 10000,
+                ])->execute();
+            }
+            $this->main();
+            die();
+        }
 
-        if ($this->text == '/start'){ $this->main();}
-        if ($this->text == '/contact'){ $this->contact();}
-        if ($this->text == '/menu'){ $this->main(); }
-        if ($this->text == '💵 Hisobni to`ldirish'){ $this->payment(); }
-        if ($this->text == '📌 YO`RIQNOMA!'){ $this->rules(); }
+        if (!$check){
+            $this->contact();
+        }
 
-
+        if ($check){
+            if ($this->text === '/start'){ $this->main();}
+            if ($this->text === '/contact'){ $this->contact();}
+            if ($this->text === '/menu'){ $this->main(); }
+            if ($this->text === '💵 Hisobni to`ldirish'){ $this->payment(); }
+            if ($this->text === '📌 YO`RIQNOMA!'){ $this->rules(); }
+            if ($this->text === '📝 Ma`lumotlarim'){ $this->personal(); }
+            if ($this->text === '💬 Adminga Murojaat'){ $this->admin(); }
+            if ($this->text === '👥 Muhokami Guruhi'){ $this->group(); }
+        }
     }
 
 
@@ -93,6 +101,9 @@ class BotController extends Controller
                     ['text'=>'💬 Adminga Murojaat'],
                     ['text'=>'📌 YO`RIQNOMA!']
                 ],
+                [
+                    ['text'=>'👥 Muhokami Guruhi'],
+                ],
             ],
             'resize_keyboard'=>true
         ]);
@@ -125,11 +136,21 @@ class BotController extends Controller
     }
 
 
+    public function personal(){
+        $data = TgUser::findOne(['tg_chat_id'=>$this->chatId]);
+        $this->bot(Token::sendMessage,[
+            'chat_id'=>$this->chatId,
+            'text'=> "👨‍🎓<b>Ism Familiyaingiz: </b> $data->fullName \n 📞 <b> Telefoningiz: </b> $data->tg_phone \n 💴 <b> Balansingiz: </b> $data->money <b>UZS</b>",
+            'parse_mode'=>'html',
+        ]);
+    }
+
+
 
     public function rules(){
         $this->bot(Token::sendMessage,[
             'chat_id'=>$this->chatId,
-            'text'=> Token::RULES,
+            'text'=> Contact::findOne(['id'=>1])->description,
         ]);
     }
 
@@ -142,6 +163,22 @@ class BotController extends Controller
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
         $res = curl_exec($ch);
         return json_decode($res);
+    }
+
+    public function admin(){
+        $this->bot(Token::sendMessage,[
+            'chat_id'=>$this->chatId,
+            'text'=>"<b>👨‍⚖️ Sardor Xolmurodov</b>\n ------------------------------------- \n <b>📞 +998888158822</b>\n ------------------------------------- \n <b>💬 @Sardor8822 👈</b>",
+            'parse_mode'=>'html',
+        ]);
+    }
+
+    public function group(){
+        $this->bot(Token::sendMessage,[
+            'chat_id'=>$this->chatId,
+            'text'=> "<strong><a href='https://t.me/starter_Gr123'>Parvoz Quiz Test Guruhi 👈</a></strong>",
+            'parse_mode'=>'html',
+        ]);
     }
 
 

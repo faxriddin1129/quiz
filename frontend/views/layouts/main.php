@@ -10,6 +10,8 @@ use yii\bootstrap4\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
 
+$this->title = Yii::$app->name;
+
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -31,16 +33,15 @@ AppAsset::register($this);
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+            'class' => 'navbar navbar-expand-md navbar-dark bg-info fixed-top',
         ],
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
+        ['label' => 'Signup', 'url' => ['/site/signup']]
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
         $menuItems[] = '<li>'
@@ -70,10 +71,10 @@ AppAsset::register($this);
     </div>
 </main>
 
-<footer class="footer mt-auto py-3 text-muted">
+<footer class="footer mt-auto py-3 text-muted bg-info">
     <div class="container">
-        <p class="float-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-right"><?= Yii::powered() ?></p>
+        <p class="float-left text-light">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
+        <p class="float-right text-light"><?= Yii::powered() ?></p>
     </div>
 </footer>
 
